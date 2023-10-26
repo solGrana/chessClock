@@ -21,6 +21,8 @@ public class ChessClockManager : MonoBehaviour
     public GameObject gameplayUI;
     public GameObject pausePanel;
     public GameObject startPanel;
+    public GameObject clickSound;
+
 
     int storedMinutes = 1;
 
@@ -102,12 +104,16 @@ public class ChessClockManager : MonoBehaviour
         //player 1 click his button
         isPlayer1Turn = false;
         isPaused = false;
+        //instantiate click sound
+        Instantiate(clickSound);
     }
     public void ClickPlayer2()
     {
         //player 2 click his button
         isPlayer1Turn = true;
         isPaused = false;
+        //instantiate click sound
+        Instantiate(clickSound);
     }
 
     public void RestartClock()
