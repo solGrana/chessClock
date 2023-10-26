@@ -1,6 +1,6 @@
 # chessClock
 
-![icono de la app](images/iconoChess (1).png)
+![icono de la app](images/iconoChesss.png)
 
 Chess Clock es una app simple de reloj de ajedrez desarrollada en Unity con c#.
 
