@@ -6,22 +6,27 @@ using UnityEngine.UI;
 
 public class ChessClockManager : MonoBehaviour
 {
-    [Header ("Texts")] 
+    [Header("Texts")]
     public Text player1TimeText;
     public Text player2TimeText;
     public Text whoseTurnText;
+    public Text movesP1Text;
+    public Text movesP2Text;
 
-
+    public int movesP1;
+    public int movesP2;
     private float player1Time;
     private float player2Time;
     private bool isPlayer1Turn = true;
     private bool isPaused = true;
 
-    [Header ("Game Objects")] 
+    [Header("Game Objects")]
     public GameObject gameplayUI;
     public GameObject pausePanel;
     public GameObject startPanel;
     public GameObject clickSound;
+    public GameObject timeOut;
+
 
 
     int storedMinutes = 1;
@@ -33,6 +38,8 @@ public class ChessClockManager : MonoBehaviour
         SetInitialTime(10); // initial time 10 minutes each
         UpdateTimeDisplays();
         PlayerPrefs.SetInt("SelectedMinutes", storedMinutes);
+        movesP1 = -1;
+        movesP2 = 0;
     }
 
     private void Update()
@@ -47,7 +54,8 @@ public class ChessClockManager : MonoBehaviour
                 player1Time -= Time.deltaTime;
                 if (player1Time <= 0)
                 {
-                    // Manejar el final del tiempo para el jugador 1.
+                    TimeOut();
+                    whoseTurnText.text = "White Wins";
                 }
             }
             else
@@ -55,21 +63,28 @@ public class ChessClockManager : MonoBehaviour
                 player2Time -= Time.deltaTime;
                 if (player2Time <= 0)
                 {
-                    // Manejar el final del tiempo para el jugador 2.
+                   TimeOut();
+                    whoseTurnText.text = "Black Wins";
                 }
             }
-            
+
         }
+    }
+
+    private void TimeOut()
+    {
+        TogglePause();
+        Instantiate(timeOut);
     }
 
     public void TogglePause()
     {
         //pause game
-        isPaused = true; 
+        isPaused = true;
         // activate pause panel and deactivate gameplay UI
         gameplayUI.SetActive(false);
         pausePanel.SetActive(true);
-        
+
         // update text to show whose turn it is
         UpdateTurnText();
     }
@@ -86,6 +101,13 @@ public class ChessClockManager : MonoBehaviour
         }
     }
 
+    private void UpdateMoves()
+    {
+        movesP1Text.text = "Moves: " + movesP1.ToString();
+        movesP2Text.text = "Moves: " + movesP2.ToString(); ;
+    }
+
+
     public void Resume()
     {
         isPaused = false;
@@ -101,38 +123,60 @@ public class ChessClockManager : MonoBehaviour
     }
     public void ClickPlayer1()
     {
-        //player 1 click his button
-        isPlayer1Turn = false;
-        isPaused = false;
-        //instantiate click sound
-        Instantiate(clickSound);
+        if (isPlayer1Turn)
+        {
+            //player 1 clicked his button
+            isPlayer1Turn = false;
+            isPaused = false;
+            //instantiate click sound
+            Instantiate(clickSound);
+            //update moves
+            movesP1 += 1;
+            UpdateMoves();
+        }
+
     }
     public void ClickPlayer2()
     {
-        //player 2 click his button
-        isPlayer1Turn = true;
-        isPaused = false;
-        //instantiate click sound
-        Instantiate(clickSound);
+        if(!isPlayer1Turn){
+            //player 2 clicked his button
+            isPlayer1Turn = true;
+            isPaused = false;
+            //instantiate click sound
+            Instantiate(clickSound);
+            //update moves
+            movesP2 += 1;
+            UpdateMoves();
+        }
     }
 
     public void RestartClock()
     {
-        isPaused = true;
-        UpdateTimeDisplays();
-        gameplayUI.SetActive(true);
-        pausePanel.SetActive(false);
-        startPanel.SetActive(false);
-    }
-
-    public void StartGame()
-    {
+        movesP1 = -1; 
+        movesP2 = 0;
+        UpdateMoves();
         isPaused = true;
         UpdateTimeDisplays();
         gameplayUI.SetActive(true);
         pausePanel.SetActive(false);
         startPanel.SetActive(false);
         SetInitialTime(storedMinutes);
+        isPlayer1Turn = true;
+        
+    }
+
+    public void StartGame()
+    {
+        movesP1 = -1; 
+        movesP2 = 0;
+        UpdateMoves();
+        isPaused = true;
+        UpdateTimeDisplays();
+        gameplayUI.SetActive(true);
+        pausePanel.SetActive(false);
+        startPanel.SetActive(false);
+        SetInitialTime(storedMinutes);
+        isPlayer1Turn = true;
     }
 
     public void SetInitialTime(int minutes)
