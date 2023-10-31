@@ -13,3 +13,5 @@ images/bannerChessClock.jpg
 
 ![icono de la app](images/bannerChessClock.jpg) 
 
+Link a playstore: https://play.google.com/store/apps/details?id=com.mantisnet.chessclock
+
